@@ -1,4 +1,4 @@
-import { CornerControlType, ControlType, ACoordsProps, CornerProps } from './type';
+import { CornerControlType, ControlType, ACoordsProps, CornerProps, OppositeType, Transform } from './type';
 import { Sprite } from 'pixi.js';
 
 // css cursor
@@ -29,42 +29,72 @@ export const anchorMap: Record<CornerControlType, number[]> = {
   bl: [0, 1]
 };
 
+const LEFT = 'left'
+const TOP = 'top'
+const RIGHT = 'right'
+const BOTTOM = 'bottom'
+const CENTER = 'center'
+
+export const opposite: OppositeType = {
+  top: BOTTOM,
+  bottom: TOP,
+  left: RIGHT,
+  right: LEFT,
+  center: CENTER,
+}
+
 export const distances = (x1: number, x2: number, y1: number, y2: number) => {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 };
 
-export const defaultControls = {
+export const defaultControls: any = {
   ml: {
     x: -0.5,
     y: 0,
+    originX: 1,
+    originY: 0.5,
   },
   mr: {
     x: 0.5,
     y: 0,
+    originX: 0,
+    originY: 0.5,
   },
   mb: {
     x: 0,
     y: 0.5,
+    originX: 0.5,
+    originY: 0,
   },
   mt: {
     x: 0,
     y: -0.5,
+    originX: 0.5,
+    originY: 1,
   },
   tl: {
     x: 0.5,
     y: -0.5,
+    originX: 1,
+    originY: 1,
   },
   bl: {
     x: -0.5,
     y: 0.5,
+    originX: 1,
+    originY: 0,
   },
   br: {
     x: 0.5,
     y: 0.5,
+    originX: 0,
+    originY: 0,
   },
   tr: {
     x: 0.5,
     y: -0.5,
+    originX: 0,
+    originY: 1,
   }
 }
 
@@ -74,34 +104,25 @@ export const defaultControls = {
  * @returns 
  */
 export const calcACoords = (element: Sprite): ACoordsProps => {
-  const anchor = element.anchor;
-  const bounds = element.getBounds()
-  const xAnchorOffset = anchor.x * bounds.width;
-  const yAnchorOffset = anchor.x * bounds.height;
-
-  const left = element.x - xAnchorOffset;
-  const right = element.x + bounds.width + xAnchorOffset;
-  const top =  element.y - yAnchorOffset;
-  const bottom = element.y + bounds.height + yAnchorOffset;
-
   return {
     tl: {
-      x: left,
-      y: top,
+      x: element.vertexData[0],
+      y: element.vertexData[1],
     },
     tr: {
-      x: right,
-      y: top,
+      x: element.vertexData[2],
+      y: element.vertexData[3],
     },
     br: {
-      x: right,
-      y: bottom,
+      x: element.vertexData[4],
+      y: element.vertexData[5],
     },
     bl: {
-      x: left,
-      y: bottom,
+      x: element.vertexData[6],
+      y: element.vertexData[7],
     }
   }
+
 }
 
 /**
@@ -168,10 +189,10 @@ export const calcCornerCoords = (lCoords: ACoordsProps, cornerSize: number = 13)
   const mry = (lCoords.tr.y + lCoords.br.y) / 2;
 
   const cornerCoords: CornerProps = {
-    tl: {...lCoords.tl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize)},
-    tr: {...lCoords.tr, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize)},
-    bl: {...lCoords.bl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize)},
-    br: {...lCoords.br, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize)},
+    tl: { ...lCoords.tl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
+    tr: { ...lCoords.tr, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
+    bl: { ...lCoords.bl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
+    br: { ...lCoords.br, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
     mt: {
       x: mtx,
       y: lCoords.tr.y,
@@ -201,9 +222,11 @@ export const calcCornerCoords = (lCoords: ACoordsProps, cornerSize: number = 13)
  * 计算相对object的锚点的坐标
  * 点击点 - 原点位置 
  */
-export const getLocalPoint = (element: Sprite, padding: number, x: number, y: number) => {
+export const getLocalPoint = (element: Sprite, transf: Transform, padding: number, x: number, y: number) => {
   const point = element.getGlobalPosition()
 
+  console.log('this.transf', transf);
+  
   const localPoint = {
     x: x - point.x,
     y: y - point.y,

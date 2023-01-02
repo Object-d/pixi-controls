@@ -5,7 +5,7 @@ import {
   ControlsProps,
   Transform,
 } from "./type";
-import { allControlPos, calcACoords, calcCornerCoords, calcLineCoords, getLocalPoint } from './utils';
+import { allControlPos, calcACoords, calcCornerCoords, calcLineCoords, defaultControls, getLocalPoint, opposite } from './utils';
 import { Control } from "./control";
 import { ACoordsProps, CornerProps } from './type';
 
@@ -38,6 +38,10 @@ export class Controls extends Sprite {
       signX: 1,
       signY: 1,
       action: "scaleX",
+      ex: 0,
+      ey: 0,
+      originX: 0,
+      originY: 0
     }
     this.visible = !!options.hasBorders;
     this.borderColor = options.borderColor || 0xec6c00;
@@ -66,6 +70,11 @@ export class Controls extends Sprite {
     this.renderCorners();
   }
 
+  renderObject() {
+    // 会造成offset，调整x，y
+    this.element.anchor.set(this.transf.originX, this.transf.originY)
+  }
+
   renderBorder() {
     const poly = new Graphics();
     const lCoords = this.lCoords;
@@ -85,7 +94,67 @@ export class Controls extends Sprite {
     this.addChild(poly);
   }
 
-  onDragStart = () => {
+  setTargetScale(scaleX?: number, scaleY?: number) {
+    if (!this.rendering) {
+      this.rendering = requestAnimationFrame(() => {
+        if (this.rendering) {
+          cancelAnimationFrame(this.rendering);
+        }
+        if (scaleX !== undefined) {
+          this.element.scale.x = scaleX
+          this.transf.scaleX = scaleX;
+        }
+        if (scaleY !== undefined) {
+          this.element.scale.y = scaleY
+          this.transf.scaleY = scaleY;
+        }
+        this.removeChildren()
+        this.renderControls();
+        this.rendering = 0;
+      })
+    }
+  }
+
+  scaleObject(event: any, options?: any) {
+    let by = options?.by
+    const point = event.data.global
+    let newPoint = getLocalPoint(this.element, this.transf, this.padding, point.x, point.y)
+    let scaleX = Math.abs(newPoint.x / this.targetSize.width);
+    let scaleY = Math.abs(newPoint.y / this.targetSize.height);
+
+    if (!by) {
+      this.setTargetScale(scaleX, scaleY)
+    }
+    else {
+      by === 'x' && this.setTargetScale(scaleX);
+      by === 'y' && this.setTargetScale(undefined, scaleY);
+    }
+  }
+
+  scaleObjectX(event: any) {
+    this.scaleObject(event, { by: 'x' });
+  }
+
+  scaleObjectY(event: any) {
+    this.scaleObject(event, { by: 'y' });
+  }
+
+  scaleObjectFromCorner(event: any) {
+    this.scaleObject(event);
+  }
+
+  onDragStart = (event: any) => {
+    const control = event.currentTarget
+    this.transf = {
+      ...this.transf,
+      corner: control.pos,
+      originX: defaultControls[control.pos].originX,
+      originY: defaultControls[control.pos].originY,
+    }
+
+    this.renderObject()
+    this.renderControls()
+        
     if (!this.dragging) {
       this.dragging = true
     }
@@ -93,25 +162,12 @@ export class Controls extends Sprite {
 
   onDragMove = (event: any) => {
     if (this.dragging) {
-      const point = event.data.global
-      const newPoint = getLocalPoint(this.element, this.padding, point.x, point.y)
-      let scaleX: number
-      scaleX = Math.abs(newPoint.x / this.targetSize.width);
-      console.log('onDragMove', newPoint.x)
-
-      if (!this.rendering) {
-        this.rendering = requestAnimationFrame(() => {
-          this.element.scale.x = scaleX
-          if (this.rendering) {
-            cancelAnimationFrame(this.rendering);
-          }
-          this.removeChildren()
-          this.renderControls();
-          this.rendering = 0;
-          if (scaleX) {
-            this.transf.scaleX = scaleX
-          }
-        })
+      if (this.transf.corner === 'mr' || this.transf.corner === 'ml') {
+        this.scaleObjectX(event)
+      } else if (this.transf.corner === 'mt' || this.transf.corner === 'mb') {
+        this.scaleObjectY(event)
+      } else {
+        this.scaleObjectFromCorner(event)
       }
     }
   }

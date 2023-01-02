@@ -41,10 +41,24 @@ export interface Transform {
   action: string; // scaleX scaleY
   scaleX: number;
   scaleY: number;
-  // corner: string;
+  corner?: string;
   signX: number; // x轴正负号
   signY: number; // x轴正负号
+  originX: number;
+  originY: number;
+  ex: number; //
+  ey: number; //
 }
+
+export enum Direction {
+  LEFT = 'left',
+  TOP = 'top',
+  RIGHT = 'right',
+  BOTTOM = 'left',
+  CENTER = 'center'
+}
+
+export type OppositeType = { [key: string]: string }
 
 export interface Position {
   x: number;

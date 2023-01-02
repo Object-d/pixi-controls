@@ -17,6 +17,7 @@ const App = () => {
       height: containerSize
     });
     ref.current.appendChild(app.view);
+
     const luFei = Sprite.from(
       "https://img1.baidu.com/it/u=2082729884,1583333066&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=711"
     );
