@@ -20,12 +20,11 @@ export interface ControlConfigProps {
 export interface ControlProps extends ControlConfigProps {
   x: number;
   y: number;
-  pos: ControlType;
   element: any;
   visible: boolean;
+  cursor: string;
+  corner: string;
   onDragStart: (event: MouseEvent) => void;
-  onDragMove: (event: MouseEvent) => void;
-  onDragEnd: (event: MouseEvent) => void;
 }
 
 export interface ControlsProps extends ControlConfigProps {

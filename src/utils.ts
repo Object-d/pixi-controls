@@ -2,7 +2,7 @@ import { CornerControlType, ControlType, ACoordsProps, CornerProps, OppositeType
 import { Sprite } from 'pixi.js';
 
 // css cursor
-export const cursorMap = {
+export const cursorMap: any = {
   tr: "nesw-resize",
   tl: "nwse-resize",
   br: "nwse-resize",
@@ -190,9 +190,9 @@ export const calcCornerCoords = (lCoords: ACoordsProps, cornerSize: number = 13)
 
   const cornerCoords: CornerProps = {
     tl: { ...lCoords.tl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
-    tr: { ...lCoords.tr, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
-    bl: { ...lCoords.bl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
-    br: { ...lCoords.br, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
+    tr: { ...lCoords.tr, corner: calcItem(lCoords.tr.x, lCoords.tr.y, cornerSize) },
+    bl: { ...lCoords.bl, corner: calcItem(lCoords.bl.x, lCoords.bl.y, cornerSize) },
+    br: { ...lCoords.br, corner: calcItem(lCoords.br.x, lCoords.br.y, cornerSize) },
     mt: {
       x: mtx,
       y: lCoords.tr.y,

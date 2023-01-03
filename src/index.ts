@@ -5,9 +5,12 @@ import {
   ControlsProps,
   Transform,
 } from "./type";
-import { allControlPos, calcACoords, calcCornerCoords, calcLineCoords, defaultControls, getLocalPoint, opposite } from './utils';
+import { allControlPos, calcACoords, calcCornerCoords, calcLineCoords, defaultControls, getLocalPoint } from './utils';
 import { Control } from "./control";
 import { ACoordsProps, CornerProps } from './type';
+import {
+  cursorMap,
+} from './utils'
 
 export class Controls extends Container {
   private coords: ACoordsProps;
@@ -43,6 +46,7 @@ export class Controls extends Container {
       originX: 0,
       originY: 0
     }
+    this.interactive = true;
     this.visible = !!options.hasBorders;
     this.borderColor = options.borderColor || 0xec6c00;
     this.element = options.element;
@@ -62,6 +66,11 @@ export class Controls extends Container {
     }
 
     this.renderControls()
+
+    // 下面事件需要把控件、边框都包含在内
+    this.on("mouseup", this.onDragEnd)
+    .on("mouseupoutside", this.onDragEnd)
+    .on("mousemove", this.onDragMove)
   }
 
   renderControls() {
@@ -70,6 +79,7 @@ export class Controls extends Container {
     this.lCoords = calcLineCoords(this.coords, this.padding)
     this.cornerCoords = calcCornerCoords(this.lCoords, this.config.cornerSize)
 
+    this.renderControlsContainer()
     this.renderBorder();
     this.renderCorners();
   }
@@ -83,6 +93,26 @@ export class Controls extends Container {
     if (!this.config.centeredScaling) {
       this.element.anchor.set(this.transf.originX, this.transf.originY)
     }
+  }
+
+  renderControlsContainer() {
+    const poly = new Graphics();
+    const cornerCoords = this.cornerCoords;
+
+    poly.clear();
+    poly.interactive = true;
+    poly.lineStyle(0, this.borderColor);
+    poly.beginFill(this.config.cornerColor, 0.1);
+    poly.drawPolygon([
+      cornerCoords.tl.corner.tl,
+      cornerCoords.tr.corner.tr,
+      cornerCoords.br.corner.br,
+      cornerCoords.bl.corner.bl,
+      cornerCoords.tl.corner.tl
+    ]);
+
+    poly.endFill();
+    this.addChild(poly);
   }
 
   renderBorder() {
@@ -155,14 +185,19 @@ export class Controls extends Container {
     this.scaleObject(event);
   }
 
+  hoverControl(event: any) {
+    this.cursor = cursorMap[event.currentTarget.corner];
+  }
+
   onDragStart = (event: any) => {
     const control = event.currentTarget
     this.transf = {
       ...this.transf,
-      corner: control.pos,
-      originX: defaultControls[control.pos].originX,
-      originY: defaultControls[control.pos].originY,
+      corner: control.corner,
+      originX: defaultControls[control.corner].originX,
+      originY: defaultControls[control.corner].originY,
     }
+    this.cursor = cursorMap[control.corner];
 
     this.renderObject()
     this.renderControls()
@@ -187,23 +222,23 @@ export class Controls extends Container {
   onDragEnd = () => {
     if (this.dragging) {
       this.dragging = false
+      this.cursor = 'auto'
     }
   }
 
   renderCorners() {
     const poss = Object.keys(this.cornerCoords) as ControlType[];
-    const controls: any[] = poss.map((pos) => {
-      const control = this.cornerCoords[pos];
+    const controls: any[] = poss.map((corner) => {
+      const control = this.cornerCoords[corner];
       return new Control({
         ...this.config,
         x: control.x,
         y: control.y,
-        pos,
+        corner,
         element: this.element,
-        visible: this.controlVisibleList.includes(pos),
+        cursor: cursorMap[corner],
+        visible: this.controlVisibleList.includes(corner),
         onDragStart: this.onDragStart,
-        onDragEnd: this.onDragEnd,
-        onDragMove: this.onDragMove,
       });
     });
 

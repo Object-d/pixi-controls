@@ -1,20 +1,15 @@
 import { Graphics } from "pixi.js";
 import {
   ControlProps,
-  ControlType,
   CornerStyleType,
 } from "./type";
-import {
-  cursorMap,
-} from './utils'
 
-// TODO: scaling freely
 export class Control extends Graphics {
   public radius: number = 0;
-  private pos: ControlType;
   private cornerColor: number;
   private cornerStrokeColor: number;
   private transparentCorners: boolean;
+  corner: string;
 
   constructor(options: ControlProps) {
     super();
@@ -24,14 +19,11 @@ export class Control extends Graphics {
     this.transparentCorners = options.transparentCorners ?? true;
     this.interactive = true;
     this.visible = options.visible;
-    this.pos = options.pos;
-    this.cursor = cursorMap[this.pos];
+    this.cursor = options.cursor;
+    this.corner = options.corner;
 
     this.reRender(options.x, options.y, this.radius, options.cornerStyle);
     this.on("mousedown", options.onDragStart)
-      .on("mouseup", options.onDragEnd)
-      .on("mouseupoutside", options.onDragEnd)
-      .on("mousemove", options.onDragMove)
   }
 
   reRender(
