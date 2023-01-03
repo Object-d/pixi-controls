@@ -1,4 +1,4 @@
-import { Graphics, Sprite } from "pixi.js";
+import { Container, Graphics, Sprite } from "pixi.js";
 import {
   ControlConfigProps,
   ControlType,
@@ -9,7 +9,7 @@ import { allControlPos, calcACoords, calcCornerCoords, calcLineCoords, defaultCo
 import { Control } from "./control";
 import { ACoordsProps, CornerProps } from './type';
 
-export class Controls extends Sprite {
+export class Controls extends Container {
   private coords: ACoordsProps;
   private lCoords: ACoordsProps;
   private cornerCoords: CornerProps;
@@ -48,6 +48,9 @@ export class Controls extends Sprite {
     this.element = options.element;
     this.padding = options.padding || 0; // TODO: zoom
     this.controlVisibleList = options.controlVisibleList || allControlPos;
+    if (this.config.centeredScaling) {
+      this.element.anchor.set(0.5);
+    }
     this.coords = calcACoords(this.element)
     this.lCoords = calcLineCoords(this.coords, this.padding)
     this.cornerCoords = calcCornerCoords(this.lCoords, this.config.cornerSize)
@@ -62,6 +65,7 @@ export class Controls extends Sprite {
   }
 
   renderControls() {
+    this.removeControls()
     this.coords = calcACoords(this.element)
     this.lCoords = calcLineCoords(this.coords, this.padding)
     this.cornerCoords = calcCornerCoords(this.lCoords, this.config.cornerSize)
@@ -70,9 +74,15 @@ export class Controls extends Sprite {
     this.renderCorners();
   }
 
+  removeControls() {
+    this.removeChildren()
+  }
+
   renderObject() {
     // 会造成offset，调整x，y
-    this.element.anchor.set(this.transf.originX, this.transf.originY)
+    if (!this.config.centeredScaling) {
+      this.element.anchor.set(this.transf.originX, this.transf.originY)
+    }
   }
 
   renderBorder() {
@@ -108,7 +118,6 @@ export class Controls extends Sprite {
           this.element.scale.y = scaleY
           this.transf.scaleY = scaleY;
         }
-        this.removeChildren()
         this.renderControls();
         this.rendering = 0;
       })
@@ -122,10 +131,13 @@ export class Controls extends Sprite {
     let scaleX = Math.abs(newPoint.x / this.targetSize.width);
     let scaleY = Math.abs(newPoint.y / this.targetSize.height);
 
+    if (this.config.centeredScaling) {
+      scaleX *= 2;
+      scaleY *= 2;
+    }
     if (!by) {
       this.setTargetScale(scaleX, scaleY)
-    }
-    else {
+    } else {
       by === 'x' && this.setTargetScale(scaleX);
       by === 'y' && this.setTargetScale(undefined, scaleY);
     }
