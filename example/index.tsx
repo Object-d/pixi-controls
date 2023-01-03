@@ -24,7 +24,7 @@ const App = () => {
     // luFei.anchor.set(0.5); // 设置锚点，position以锚点为基础
     app.stage.addChild(luFei);
     luFei.position.set(300, 300);
-    luFei.anchor.set(0.5)
+    luFei.anchor.set(0)
     luFei.width = 100
     luFei.height = 100
     console.log('选中的元素', luFei)
@@ -43,7 +43,8 @@ const App = () => {
         borderColor: 0xec6c00,
         transparentCorners: true,
         hasBorders: true,
-        centeredScaling: true,
+        centeredScaling: false,
+        scaleProportionally: true,
         controlVisibleList: ["tr", "bl", "br", "mb", "tl", "mt", "mr", "ml"]
       });
       app.stage.addChild(ctrlGraph);

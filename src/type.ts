@@ -22,9 +22,9 @@ export interface ControlProps extends ControlConfigProps {
   y: number;
   element: any;
   visible: boolean;
-  cursor: string;
   corner: string;
   onDragStart: (event: MouseEvent) => void;
+  onMouceMove: (event: MouseEvent) => void;
 }
 
 export interface ControlsProps extends ControlConfigProps {
@@ -36,17 +36,22 @@ export interface ControlsProps extends ControlConfigProps {
   scaleProportionally?: boolean; // TODO 按比例缩放
 }
 
-export interface Transform {
-  action: string; // scaleX scaleY
+export interface OriginalTransform {
   scaleX: number;
   scaleY: number;
+}
+
+export interface Transform {
   corner?: string;
   signX: number; // x轴正负号
   signY: number; // x轴正负号
-  originX: number;
-  originY: number;
-  ex: number; //
-  ey: number; //
+  originX: number | string; //
+  originY: number | string;
+  scaleX: number; // 缩放
+  scaleY: number; // 缩放
+  ex: number; // 拖拽移动位置
+  ey: number; // 拖拽移动位置
+  original: OriginalTransform; // 每一次拖拽开始记录
 }
 
 export enum Direction {

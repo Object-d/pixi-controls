@@ -19,11 +19,11 @@ export class Control extends Graphics {
     this.transparentCorners = options.transparentCorners ?? true;
     this.interactive = true;
     this.visible = options.visible;
-    this.cursor = options.cursor;
     this.corner = options.corner;
 
     this.reRender(options.x, options.y, this.radius, options.cornerStyle);
     this.on("mousedown", options.onDragStart)
+      .on("mousemove", options.onMouceMove)
   }
 
   reRender(

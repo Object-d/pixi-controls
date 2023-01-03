@@ -1,4 +1,4 @@
-import { CornerControlType, ControlType, ACoordsProps, CornerProps, OppositeType, Transform } from './type';
+import { CornerControlType, ControlType, ACoordsProps, CornerProps, OppositeType, Transform, Position } from './type';
 import { Sprite } from 'pixi.js';
 
 // css cursor
@@ -47,54 +47,79 @@ export const distances = (x1: number, x2: number, y1: number, y2: number) => {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 };
 
+export const originXOffset: Record<string, number> = {
+  left: -0.5,
+  center: 0,
+  right: 0.5
+};
+
+export const originYOffset: Record<string, number> = {
+  top: -0.5,
+  center: 0,
+  bottom: 0.5
+};
+
+export const anchorX: Record<string, number> = {
+  right: 1,
+  left: 0,
+  center: 0.5
+}
+
+
+export const anchorY: Record<string, number> = {
+  bottom: 1,
+  top: 0,
+  center: 0.5
+}
+
 export const defaultControls: any = {
   ml: {
     x: -0.5,
     y: 0,
-    originX: 1,
-    originY: 0.5,
+    originX: 'right',
+    originY: 'center',
   },
   mr: {
     x: 0.5,
     y: 0,
-    originX: 0,
-    originY: 0.5,
+    originX: 'left',
+    originY: 'center',
   },
   mb: {
     x: 0,
     y: 0.5,
-    originX: 0.5,
-    originY: 0,
+    originX: 'center',
+    originY: 'top',
   },
   mt: {
     x: 0,
     y: -0.5,
-    originX: 0.5,
-    originY: 1,
+    originX: 'center',
+    originY: 'bottom',
   },
   tl: {
     x: 0.5,
     y: -0.5,
-    originX: 1,
-    originY: 1,
+    originX: 'right',
+    originY: 'bottom',
   },
   bl: {
     x: -0.5,
     y: 0.5,
-    originX: 1,
-    originY: 0,
+    originX: 'right',
+    originY: 'top',
   },
   br: {
     x: 0.5,
     y: 0.5,
-    originX: 0,
-    originY: 0,
+    originX: 'left',
+    originY: 'top',
   },
   tr: {
     x: 0.5,
     y: -0.5,
-    originX: 0,
-    originY: 1,
+    originX: 'left',
+    originY: 'bottom',
   }
 }
 
@@ -216,33 +241,4 @@ export const calcCornerCoords = (lCoords: ACoordsProps, cornerSize: number = 13)
   };
 
   return cornerCoords;
-}
-
-/**
- * 计算相对object的锚点的坐标
- * 点击点 - 原点位置 
- */
-export const getLocalPoint = (element: Sprite, transf: Transform, padding: number, x: number, y: number) => {
-  const point = element.getGlobalPosition()
-
-  console.log('this.transf', transf);
-  
-  const localPoint = {
-    x: x - point.x,
-    y: y - point.y,
-  }
-  if (localPoint.x >= padding) {
-    localPoint.x -= padding;
-  }
-  if (localPoint.x <= -padding) {
-    localPoint.x += padding;
-  }
-  if (localPoint.y >= padding) {
-    localPoint.y -= padding;
-  }
-  if (localPoint.y <= padding) {
-    localPoint.y += padding;
-  }
-
-  return localPoint
 }
