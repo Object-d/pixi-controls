@@ -48,8 +48,8 @@ export class Controls extends Container {
     this.transf = {
       scaleX: 1,
       scaleY: 1,
-      originX: centeredScaling ? 'center' : 'left',
-      originY: centeredScaling ? 'center' : 'top',
+      originX: 'center',
+      originY: 'center',
       original: {
         scaleX: 1,
         scaleY: 1,
@@ -78,6 +78,8 @@ export class Controls extends Container {
     this.on('mouseup', this.onDragEnd)
       .on('mouseupoutside', this.onDragEnd)
       .on('mousemove', this.onDragMove);
+
+    options.appView.addEventListener('mouseup', this.onDragEnd)
   }
 
   renderControls() {
@@ -227,11 +229,6 @@ export class Controls extends Container {
     if (!this.config.centeredScaling) {
       const oldOriginX = this.transf.originX;
       const oldOriginY = this.transf.originY;
-      console.log('================================');
-      console.log(
-        '====originX====oldOriginX=======originY========oldOriginY========='
-      );
-      console.log(originX, oldOriginX, originY, oldOriginY, origin);
       if (originX !== oldOriginX || originY !== oldOriginY) {
         const ax = anchorX[originX];
         const ay = anchorY[originY];

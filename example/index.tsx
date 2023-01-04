@@ -24,8 +24,11 @@ const App = () => {
     // luFei.anchor.set(0.5); // 设置锚点，position以锚点为基础
     app.stage.addChild(luFei);
     luFei.position.set(100, 100);
+    app.view.addEventListener('mousemove', function (e) {
+      console.log('mousemove', e);
+    })
     // 不要设置width、height
-    luFei.anchor.set(0)
+    luFei.anchor.set(0.5)
     console.log('选中的元素', luFei)
     console.log('选中的元素.getBounds', luFei.getBounds())
     console.log('选中的元素.getLocalBounds', luFei.getLocalBounds())
@@ -33,6 +36,7 @@ const App = () => {
 
     setTimeout(() => {
       const ctrlGraph = new Controls({
+        appView: app.view,
         element: luFei,
         cornerColor: 0xec6c00,
         cornerSize: 20,
@@ -42,7 +46,7 @@ const App = () => {
         borderColor: 0xec6c00,
         transparentCorners: true,
         hasBorders: true,
-        centeredScaling: true,
+        centeredScaling: false,
         scaleProportionally: true,
         controlVisibleList: ["tr", "bl", "br", "mb", "tl", "mt", "mr", "ml"]
       });

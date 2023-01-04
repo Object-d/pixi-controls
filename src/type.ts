@@ -33,6 +33,7 @@ export interface ControlsProps extends ControlConfigProps {
   borderColor?: number;
   controlVisibleList?: ControlType[];
   scaleProportionally?: boolean; // TODO 按比例缩放
+  appView: HTMLCanvasElement;
 }
 
 export interface OriginalTransform {

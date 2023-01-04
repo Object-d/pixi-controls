@@ -1,8 +1,5 @@
-import { Graphics } from "pixi.js";
-import {
-  ControlProps,
-  CornerStyleType,
-} from "./type";
+import { Graphics } from 'pixi.js';
+import { ControlProps, CornerStyleType } from './type';
 
 export class Control extends Graphics {
   public radius: number = 0;
@@ -22,20 +19,22 @@ export class Control extends Graphics {
     this.corner = options.corner;
 
     this.reRender(options.x, options.y, this.radius, options.cornerStyle);
-    this.on("mousedown", options.onDragStart)
-      .on("mousemove", options.onMouceMove)
+    this.on('mousedown', options.onDragStart).on(
+      'mousemove',
+      options.onMouceMove
+    );
   }
 
   reRender(
     cpX: number,
     cpY: number,
     radius: number,
-    type: CornerStyleType = "circle"
+    type: CornerStyleType = 'circle'
   ) {
     this.clear();
     this.lineStyle(1, this.cornerStrokeColor);
     this.beginFill(this.cornerColor, this.transparentCorners ? 0.001 : 1);
-    if (type === "square") {
+    if (type === 'square') {
       this.drawRect(cpX - radius / 2, cpY - radius / 2, radius, radius);
     } else {
       this.drawCircle(cpX, cpY, radius);
