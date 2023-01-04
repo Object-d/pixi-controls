@@ -5,7 +5,7 @@ import {
   Application,
   Sprite,
 } from "pixi.js";
-import {Controls} from '../src';
+import {Controls} from './src';
 
 const containerSize = 800
 
@@ -19,14 +19,13 @@ const App = () => {
     ref.current.appendChild(app.view);
 
     const luFei = Sprite.from(
-      "https://img1.baidu.com/it/u=2082729884,1583333066&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=711"
+      "https://pixijs.io/examples/examples/assets/bunny.png"
     );
     // luFei.anchor.set(0.5); // 设置锚点，position以锚点为基础
     app.stage.addChild(luFei);
-    luFei.position.set(300, 300);
+    luFei.position.set(100, 100);
+    // 不要设置width、height
     luFei.anchor.set(0)
-    luFei.width = 100
-    luFei.height = 100
     console.log('选中的元素', luFei)
     console.log('选中的元素.getBounds', luFei.getBounds())
     console.log('选中的元素.getLocalBounds', luFei.getLocalBounds())
@@ -43,7 +42,7 @@ const App = () => {
         borderColor: 0xec6c00,
         transparentCorners: true,
         hasBorders: true,
-        centeredScaling: false,
+        centeredScaling: true,
         scaleProportionally: true,
         controlVisibleList: ["tr", "bl", "br", "mb", "tl", "mt", "mr", "ml"]
       });

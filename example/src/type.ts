@@ -1,11 +1,12 @@
-export type CornerControlType = 'tl' | 'tr' | 'br' | 'bl';
-export type MiddleControlType = 'mr' | 'mt' | 'ml' | 'mb';
+
+export type CornerControlType = "tl" | "tr" | "br" | "bl";
+export type MiddleControlType = "mr" | "mt" | "ml" | "mb";
 export type ControlType = CornerControlType | MiddleControlType;
 
 export type ControlPostionType = {
   [key in ControlType]: { x: number; y: number };
 };
-export type CornerStyleType = 'circle' | 'square';
+export type CornerStyleType = "circle" | "square";
 
 export interface ControlConfigProps {
   cornerSize?: number;
@@ -54,10 +55,10 @@ export enum Direction {
   TOP = 'top',
   RIGHT = 'right',
   BOTTOM = 'left',
-  CENTER = 'center',
+  CENTER = 'center'
 }
 
-export type OppositeType = { [key: string]: string };
+export type OppositeType = { [key: string]: string }
 
 export interface Position {
   x: number;
@@ -65,10 +66,10 @@ export interface Position {
 }
 
 export interface ACoordsProps {
-  tr: Position;
-  br: Position;
-  tl: Position;
-  bl: Position;
+  tr: Position,
+  br: Position,
+  tl: Position,
+  bl: Position,
 }
 
 export interface OCoordsProps extends ACoordsProps {
@@ -85,10 +86,10 @@ export interface CornerItemProps {
 }
 
 export interface CornerProps {
-  tr: CornerItemProps;
-  br: CornerItemProps;
-  tl: CornerItemProps;
-  bl: CornerItemProps;
+  tr: CornerItemProps,
+  br: CornerItemProps,
+  tl: CornerItemProps,
+  bl: CornerItemProps,
   mt: CornerItemProps;
   ml: CornerItemProps;
   mr: CornerItemProps;

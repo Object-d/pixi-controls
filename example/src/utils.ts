@@ -1,45 +1,39 @@
-import {
-  CornerControlType,
-  ControlType,
-  ACoordsProps,
-  CornerProps,
-  OppositeType,
-} from './type';
+import { CornerControlType, ControlType, ACoordsProps, CornerProps, OppositeType, Transform, Position } from './type';
 import { Sprite } from 'pixi.js';
 
 // css cursor
 export const cursorMap: any = {
-  tr: 'nesw-resize',
-  tl: 'nwse-resize',
-  br: 'nwse-resize',
-  bl: 'nesw-resize',
-  mr: 'ew-resize',
-  mt: 'ns-resize',
-  ml: 'ew-resize',
-  mb: 'ns-resize',
+  tr: "nesw-resize",
+  tl: "nwse-resize",
+  br: "nwse-resize",
+  bl: "nesw-resize",
+  mr: "ew-resize",
+  mt: "ns-resize",
+  ml: "ew-resize",
+  mb: "ns-resize"
 };
 
-export const cornerTypeList: CornerControlType[] = ['tr', 'tl', 'br', 'bl'];
+export const cornerTypeList: CornerControlType[] = ["tr", "tl", "br", "bl"];
 export const allControlPos: ControlType[] = [
   ...cornerTypeList,
-  'mr',
-  'mt',
-  'ml',
-  'mb',
+  "mr",
+  "mt",
+  "ml",
+  "mb"
 ];
 
 export const anchorMap: Record<CornerControlType, number[]> = {
   tl: [1, 1],
   tr: [0, 1],
   br: [0, 0],
-  bl: [0, 1],
+  bl: [0, 1]
 };
 
-const LEFT = 'left';
-const TOP = 'top';
-const RIGHT = 'right';
-const BOTTOM = 'bottom';
-const CENTER = 'center';
+const LEFT = 'left'
+const TOP = 'top'
+const RIGHT = 'right'
+const BOTTOM = 'bottom'
+const CENTER = 'center'
 
 export const opposite: OppositeType = {
   top: BOTTOM,
@@ -47,7 +41,7 @@ export const opposite: OppositeType = {
   left: RIGHT,
   right: LEFT,
   center: CENTER,
-};
+}
 
 export const distances = (x1: number, x2: number, y1: number, y2: number) => {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
@@ -56,26 +50,27 @@ export const distances = (x1: number, x2: number, y1: number, y2: number) => {
 export const originXOffset: Record<string, number> = {
   left: -0.5,
   center: 0,
-  right: 0.5,
+  right: 0.5
 };
 
 export const originYOffset: Record<string, number> = {
   top: -0.5,
   center: 0,
-  bottom: 0.5,
+  bottom: 0.5
 };
 
 export const anchorX: Record<string, number> = {
   right: 1,
   left: 0,
-  center: 0.5,
-};
+  center: 0.5
+}
+
 
 export const anchorY: Record<string, number> = {
   bottom: 1,
   top: 0,
-  center: 0.5,
-};
+  center: 0.5
+}
 
 export const defaultControls: any = {
   ml: {
@@ -125,13 +120,13 @@ export const defaultControls: any = {
     y: -0.5,
     originX: 'left',
     originY: 'bottom',
-  },
-};
+  }
+}
 
 /**
  * 计算element的包围盒
  * @param element 选中元素
- * @returns
+ * @returns 
  */
 export const calcACoords = (element: Sprite): ACoordsProps => {
   return {
@@ -150,15 +145,16 @@ export const calcACoords = (element: Sprite): ACoordsProps => {
     bl: {
       x: element.vertexData[6],
       y: element.vertexData[7],
-    },
-  };
-};
+    }
+  }
+
+}
 
 /**
  * 计算border的坐标
  * @param aCoords element的包围盒
  * @param padding 边距
- * @returns
+ * @returns 
  */
 export const calcLineCoords = (aCoords: ACoordsProps, padding: number) => {
   const lineCoords = {
@@ -177,22 +173,19 @@ export const calcLineCoords = (aCoords: ACoordsProps, padding: number) => {
     bl: {
       x: aCoords.bl.x - padding,
       y: aCoords.bl.y + padding,
-    },
+    }
   };
 
   return lineCoords;
-};
+}
 
 /**
  * 计算
- * @param oCoords
- * @param cornerSize
- * @returns
+ * @param oCoords 
+ * @param cornerSize 
+ * @returns 
  */
-export const calcCornerCoords = (
-  lCoords: ACoordsProps,
-  cornerSize: number = 13
-): CornerProps => {
+export const calcCornerCoords = (lCoords: ACoordsProps, cornerSize: number = 13): CornerProps => {
   function calcItem(centerX: number, centerY: number, cornerSize: number) {
     const halfSize = cornerSize / 2;
     return {
@@ -221,43 +214,31 @@ export const calcCornerCoords = (
   const mry = (lCoords.tr.y + lCoords.br.y) / 2;
 
   const cornerCoords: CornerProps = {
-    tl: {
-      ...lCoords.tl,
-      corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize),
-    },
-    tr: {
-      ...lCoords.tr,
-      corner: calcItem(lCoords.tr.x, lCoords.tr.y, cornerSize),
-    },
-    bl: {
-      ...lCoords.bl,
-      corner: calcItem(lCoords.bl.x, lCoords.bl.y, cornerSize),
-    },
-    br: {
-      ...lCoords.br,
-      corner: calcItem(lCoords.br.x, lCoords.br.y, cornerSize),
-    },
+    tl: { ...lCoords.tl, corner: calcItem(lCoords.tl.x, lCoords.tl.y, cornerSize) },
+    tr: { ...lCoords.tr, corner: calcItem(lCoords.tr.x, lCoords.tr.y, cornerSize) },
+    bl: { ...lCoords.bl, corner: calcItem(lCoords.bl.x, lCoords.bl.y, cornerSize) },
+    br: { ...lCoords.br, corner: calcItem(lCoords.br.x, lCoords.br.y, cornerSize) },
     mt: {
       x: mtx,
       y: lCoords.tr.y,
-      corner: calcItem(mtx, lCoords.tr.y, cornerSize),
+      corner: calcItem(mtx, lCoords.tr.y, cornerSize)
     },
     mb: {
       x: mbx,
       y: lCoords.br.y,
-      corner: calcItem(mbx, lCoords.br.y, cornerSize),
+      corner: calcItem(mbx, lCoords.br.y, cornerSize)
     },
     ml: {
       x: lCoords.bl.x,
       y: mly,
-      corner: calcItem(lCoords.bl.x, mly, cornerSize),
+      corner: calcItem(lCoords.bl.x, mly, cornerSize)
     },
     mr: {
       x: lCoords.br.x,
       y: mry,
-      corner: calcItem(lCoords.br.x, mry, cornerSize),
+      corner: calcItem(lCoords.br.x, mry, cornerSize)
     },
   };
 
   return cornerCoords;
-};
+}
